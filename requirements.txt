@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+aiomysql
+asyncpg
+pydantic
+pymysql
+psycopg2-binary

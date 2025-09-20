@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  sql-api:
+    image: sql-execution-api:latest
+    ports:
+      - "3001:3001"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CORS_MODE=${CORS_MODE:-development}
+      - CORS_ORIGINS=${CORS_ORIGINS:-}
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - sql-network
+
+  # MySQL示例服务（可选，用于测试）
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: sql-mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root123
+  #     MYSQL_DATABASE: testdb
+  #     MYSQL_USER: testuser
+  #     MYSQL_PASSWORD: testpass123
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   restart: unless-stopped
+  #   networks:
+  #     - sql-network
+
+  # PostgreSQL示例服务（可选，用于测试）
+#   postgres:
+#     image: postgres:15
+#     container_name: sql-postgres
+#     environment:
+#       POSTGRES_DB: testdb
+#       POSTGRES_USER: testuser
+#       POSTGRES_PASSWORD: testpass123
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     restart: unless-stopped
+#     networks:
+#       - sql-network
+
+# volumes:
+#   mysql_data:
+#   postgres_data:
+
+networks:
+  sql-network:
+    driver: bridge
